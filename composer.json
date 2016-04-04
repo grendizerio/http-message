@@ -1,5 +1,5 @@
 {
-    "name": "grendizer/httpmessage",
+    "name": "grendizer/http-message",
     "description": "基于 PSR7 实现的 HTTP 消息组件",
     "type": "library",
     "license": "MIT",
