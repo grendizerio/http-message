@@ -91,7 +91,10 @@ class ResponseHeaderBag extends HeaderBag
         // ensure the cache-control header has sensible defaults
         if (in_array($uniqueKey, array('cache-control', 'etag', 'last-modified', 'expires'))) {
             $computed = $this->computeCacheControlValue();
-            $this->headers['cache-control'] = array($computed);
+            $this->headers['cache-control'] = array(
+                'value' => $computed,
+                'originalKey' => $key
+            );;
             $this->headerNames['cache-control'] = 'Cache-Control';
             $this->computedCacheControl = $this->parseCacheControl($computed);
         }
