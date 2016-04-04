@@ -3,10 +3,10 @@
     "description": "基于 PSR7 实现的 HTTP 消息组件",
     "type": "library",
     "license": "MIT",
-    "homepage": "http://grendizerio.github.io/http-message/",
+    "homepage": "http://grendizerio.github.io/httpMessage/",
     "support": {
-        "issues": "https://github.com/grendizerio/http-message/issues",
-        "source": "https://github.com/grendizerio/http-message.git"
+        "issues": "https://github.com/grendizerio/httpMessage/issues",
+        "source": "https://github.com/grendizerio/httpMessage.git"
     },
     "authors": [
         {
