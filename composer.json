@@ -22,5 +22,5 @@
             "Grendizer\\HttpMessage\\": "src/"
         }
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "dev"
 }
