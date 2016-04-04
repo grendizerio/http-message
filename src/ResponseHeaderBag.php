@@ -21,11 +21,6 @@ class ResponseHeaderBag extends HeaderBag
     protected $cookies = array();
 
     /**
-     * @var array
-     */
-    protected $headerNames = array();
-
-    /**
      * Constructor.
      *
      * @param array $headers An array of HTTP headers
@@ -51,8 +46,6 @@ class ResponseHeaderBag extends HeaderBag
             $cookies .= 'Set-Cookie: '.$cookie."\r\n";
         }
 
-        ksort($this->headerNames);
-
         return parent::__toString().$cookies;
     }
 
@@ -61,8 +54,6 @@ class ResponseHeaderBag extends HeaderBag
      */
     public function replace(array $headers = array())
     {
-        $this->headerNames = array();
-
         parent::replace($headers);
 
         if (!isset($this->headers['cache-control'])) {
@@ -75,20 +66,24 @@ class ResponseHeaderBag extends HeaderBag
      */
     public function set($key, $values, $replace = true)
     {
-        parent::set($key, $values, $replace);
+        if (empty($values)) {
+            $this->remove($key);
+        } else {
+            parent::set($key, $values, $replace);
 
-        $uniqueKey = $this->normalizeKey($key);
-        $this->headerNames[$uniqueKey] = $key;
+            $cacheKeys = array('cache-control', 'etag', 'last-modified', 'expires');
+            $uniqueKey = $this->normalizeKey($key);
 
-        // ensure the cache-control header has sensible defaults
-        if (in_array($uniqueKey, array('cache-control', 'etag', 'last-modified', 'expires'))) {
-            $computed = $this->computeCacheControlValue();
-            $this->headers['cache-control'] = array(
-                'value' => $computed,
-                'originalKey' => $key
-            );
-            $this->headerNames['cache-control'] = 'Cache-Control';
-            $this->computedCacheControl = $this->parseCacheControl($computed);
+            // ensure the cache-control header has sensible defaults
+            if (in_array($uniqueKey, $cacheKeys)) {
+                $computed = $this->computeCacheControlValue();
+                $this->headers['cache-control'] = array(
+                    'value' => $computed,
+                    'originalKey' => $key
+                );
+                
+                $this->computedCacheControl = $this->parseCacheControl($computed);
+            }
         }
     }
 
@@ -99,10 +94,7 @@ class ResponseHeaderBag extends HeaderBag
     {
         parent::remove($key);
 
-        $uniqueKey = str_replace('_', '-', strtolower($key));
-        unset($this->headerNames[$uniqueKey]);
-
-        if ('cache-control' === $uniqueKey) {
+        if ('cache-control' === $this->normalizeKey($key)) {
             $this->computedCacheControl = array();
         }
     }
