@@ -33,7 +33,9 @@ class ResponseHeaderBag extends HeaderBag
     public function __construct(array $headers = array())
     {
         parent::__construct($headers);
-
+        
+        // 注意此处的 'cache-control'
+        // 可以不使用 $this->normalizeKey()
         if (!isset($this->headers['cache-control'])) {
             $this->set('Cache-Control', '');
         }
@@ -52,16 +54,6 @@ class ResponseHeaderBag extends HeaderBag
         ksort($this->headerNames);
 
         return parent::__toString().$cookies;
-    }
-
-    /**
-     * Returns the headers, with original capitalizations.
-     *
-     * @return array An array of headers
-     */
-    public function allPreserveCase()
-    {
-        return array_combine($this->headerNames, $this->headers);
     }
 
     /**
@@ -94,7 +86,7 @@ class ResponseHeaderBag extends HeaderBag
             $this->headers['cache-control'] = array(
                 'value' => $computed,
                 'originalKey' => $key
-            );;
+            );
             $this->headerNames['cache-control'] = 'Cache-Control';
             $this->computedCacheControl = $this->parseCacheControl($computed);
         }
